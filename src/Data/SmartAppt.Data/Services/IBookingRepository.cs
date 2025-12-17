@@ -11,7 +11,7 @@ public interface IBookingRepository
     Task<BookingEntity?> GetByIdAsync(int bookingId, CancellationToken ct);
     Task<List<GetFreeSlotModel>> GetBookingsForDayAsync(int businessId, int serviceId, DateTime dateUtc, CancellationToken ct);
     Task<List<BookingWithCustomerDetailsModel>> GetDailyBookingsWithCustomersAsync(int businessId, DateTime dateUtc, CancellationToken ct);
-    Task<List<BookingEntity>> GetAllBookingsByBusinessIdAsync(int businessId, CancellationToken ct);
+    Task<List<BookingEntity>> GetBookingsAsync(int businessId, string? status, DateOnly? date, int skip = 0, int take = 50, CancellationToken ct = default);
     Task<bool> DecideBookingStatusAsync(int bookingId, string status, CancellationToken ct);
     Task<List<BookingCountByDayModel>> GetMonthlyCalendarAsync(int businessId, DateTime fromUtc, DateTime toUtc, CancellationToken ct);
 }

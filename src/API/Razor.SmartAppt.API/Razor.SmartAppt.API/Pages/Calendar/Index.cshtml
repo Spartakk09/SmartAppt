@@ -1,0 +1,141 @@
+﻿@page
+@model Razor.SmartAppt.API.Pages.Calendar.IndexModel
+
+<h2>Calendar</h2>
+
+<form method="post" asp-page-handler="LoadCalendar" class="mb-4 calendar-filters">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label">Business Id</label>
+            <input asp-for="BusinessId" class="form-control" />
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Month</label>
+            <input asp-for="Month" class="form-control" />
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Year</label>
+            <input asp-for="Year" class="form-control" />
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100">Load Calendar</button>
+        </div>
+    </div>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert alert-info mt-3">@Model.Message</div>
+}
+
+@if (Model.MonthlyCalendar != null)
+{
+    <div class="row row-cols-7 gy-3 mt-4 calendar-grid">
+
+        @for (int d = 1; d <= DateTime.DaysInMonth(Model.Year, Model.Month); d++)
+        {
+            var dayInfo = Model.MonthlyCalendar.FirstOrDefault(x => x.DateUtc.Day == d);
+            var count = dayInfo?.BookingCount ?? 0;
+
+            var stateClass = count == 0
+            ? "calendar-day-free"
+            : count >= 10
+            ? "calendar-day-full"    
+            : "calendar-day-partial";      
+
+            <div class="col">
+                <form method="post" asp-page-handler="LoadBookings">
+                    <input type="hidden" asp-for="BusinessId" />
+                    <input type="hidden" asp-for="Month" />
+                    <input type="hidden" asp-for="Year" />
+                    <input type="hidden" name="day" value="@d" />
+
+                    <button class="calendar-day @stateClass w-100">
+                        <div class="card-body calendar-day-button">
+                            <div class="calendar-day-number">@d</div>
+                            <div class="calendar-day-status">
+                                @count bookings
+                            </div>
+                        </div>
+                    </button>
+                </form>
+            </div>
+        }
+    </div>
+}
+
+@if (Model.DailyBookings != null)
+{
+    <div class="daily-bookings-wrapper mt-4">
+
+        <div class="daily-bookings-header mb-2">
+            <h3>Bookings for @Model.SelectedDay/@Model.Month/@Model.Year</h3>
+            <span class="badge bg-success">
+                @Model.DailyBookings.Count bookings
+            </span>
+        </div>
+
+        @if (Model.DailyBookings.Any())
+        {
+            <div class="daily-bookings-table">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Customer</th>
+                            <th>Phone</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var b in Model.DailyBookings)
+                        {
+                            <tr>
+                                <td>@b.BookingId</td>
+
+                                <td class="booking-time">
+                                    @b.StartAtUtc.ToString("HH:mm") – @b.EndAtUtc.ToString("HH:mm")
+                                </td>
+
+                                <td>
+                                    <span class="booking-status @(b.Status.ToLower())">
+                                        @b.Status
+                                    </span>
+                                </td>
+
+                                <td class="booking-customer">@b.Customer.FullName</td>
+                                <td class="booking-contact">@b.Customer.Phone</td>
+
+                                <td>
+                                    <form method="post" asp-page-handler="CancelBooking">
+                                        <input type="hidden" asp-for="BusinessId" />
+                                        <input type="hidden" asp-for="Month" />
+                                        <input type="hidden" asp-for="Year" />
+                                        <input type="hidden" name="bookingId" value="@b.BookingId" />
+                                        <input type="hidden" name="day" value="@Model.SelectedDay" />
+
+                                        <button class="btn btn-danger booking-cancel-btn"
+                                                onclick="return confirm('Cancel this booking?')">
+                                            Cancel
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="no-bookings-text text-muted mt-2">
+                No bookings for selected day.
+            </div>
+        }
+    </div>
+}

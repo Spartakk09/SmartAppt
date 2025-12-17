@@ -1,0 +1,95 @@
+﻿@page
+@model Razor.SmartAppt.API.Pages.IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard-page container-fluid py-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="text-glow mb-1">SmartAppt Dashboard</h2>
+            <p class="text-muted">Quick overview of your business for today.</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <form method="get" class="d-inline-flex align-items-center gap-2 dashboard-business-form">
+                <label asp-for="BusinessId" class="form-label mb-0 text-muted small">Business Id</label>
+                <input asp-for="BusinessId" class="form-control form-control-sm w-50" />
+                <button type="submit" class="btn btn-sm btn-primary">Load</button>
+            </form>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert alert-warning">@Model.Message</div>
+    }
+
+    <!-- STAT CARDS -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="dash-card gradient-card-1">
+                <div class="dash-card-title">Today bookings</div>
+                <div class="dash-card-value">@Model.TodayBookings</div>
+                <div class="dash-card-sub">for @DateTime.UtcNow.ToString("dd MMM yyyy")</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="dash-card gradient-card-2">
+                <div class="dash-card-title">Pending</div>
+                <div class="dash-card-value">@Model.PendingBookings</div>
+                <div class="dash-card-sub">need your decision</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="dash-card gradient-card-3">
+                <div class="dash-card-title">Canceled today</div>
+                <div class="dash-card-value">@Model.CanceledToday</div>
+                <div class="dash-card-sub">cancellations</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM PANELS -->
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="panel-card">
+                <div class="panel-header"><span>Quick actions</span></div>
+                <div class="panel-body">
+                    <ul class="dashboard-links">
+                        <li><a asp-page="/Business/Create">+ Create Business</a></li>
+                        <li><a asp-page="/Business/Manage">⚙ Manage Business</a></li>
+                        <li><a asp-page="/Services/Index">💼 My Services</a></li>
+                        <li><a asp-page="/Calendar/Index">📅 Calendar</a></li>
+                        <li><a asp-page="/Bookings/Index">📖 Bookings</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="panel-card">
+                <div class="panel-header"><span>Today focus</span></div>
+                <div class="panel-body">
+                    <p class="mb-2">
+                        Pending bookings:
+                        <strong class="text-accent">@Model.PendingBookings</strong>
+                    </p>
+                    <p class="mb-2">
+                        Total bookings today:
+                        <strong class="text-accent">@Model.TodayBookings</strong>
+                    </p>
+                    <p class="mb-0 text-muted small">
+                        Use the <a asp-page="/Bookings/Index">Bookings</a> and
+                        <a asp-page="/Calendar/Index">Calendar</a> pages to manage today's schedule.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

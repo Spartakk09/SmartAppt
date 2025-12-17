@@ -237,11 +237,15 @@ public class BookingRepository : IBookingRepository
         return result;
     }
 
-    public virtual async Task<List<BookingEntity>> GetAllBookingsByBusinessIdAsync(
-    int businessId,
-    CancellationToken ct)
+    public async Task<List<BookingEntity>> GetBookingsAsync(
+        int businessId,
+        string? status = null,
+        DateOnly? date = null,
+        int skip = 0,
+        int take = 50,
+        CancellationToken ct = default)
     {
-        var result = new List<BookingEntity>();
+        var bookings = new List<BookingEntity>();
 
         await using var cn = new SqlConnection(_connectionString);
         await cn.OpenAsync(ct);
@@ -251,16 +255,17 @@ public class BookingRepository : IBookingRepository
             CommandType = CommandType.StoredProcedure
         };
 
-        cmd.Parameters.Add(new SqlParameter("@BusinessId", SqlDbType.Int)
-        {
-            Value = businessId
-        });
+        cmd.Parameters.Add(new SqlParameter("@BusinessId", SqlDbType.Int) { Value = businessId });
+        cmd.Parameters.Add(new SqlParameter("@Status", SqlDbType.NVarChar, 12) { Value = (object?)status ?? DBNull.Value });
+        cmd.Parameters.Add(new SqlParameter("@Date", SqlDbType.Date) { Value = (object?)date?.ToDateTime(new TimeOnly(0, 0)) ?? DBNull.Value });
+        cmd.Parameters.Add(new SqlParameter("@Skip", SqlDbType.Int) { Value = skip });
+        cmd.Parameters.Add(new SqlParameter("@Take", SqlDbType.Int) { Value = take });
 
         await using var reader = await cmd.ExecuteReaderAsync(ct);
 
         while (await reader.ReadAsync(ct))
         {
-            result.Add(new BookingEntity
+            bookings.Add(new BookingEntity
             {
                 BookingId = reader.GetInt32("BookingId"),
                 BusinessId = reader.GetInt32("BusinessId"),
@@ -274,7 +279,7 @@ public class BookingRepository : IBookingRepository
             });
         }
 
-        return result;
+        return bookings;
     }
 
     public virtual async Task<bool> DecideBookingStatusAsync(

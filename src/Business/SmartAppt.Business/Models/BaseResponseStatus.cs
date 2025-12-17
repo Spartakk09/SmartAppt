@@ -7,7 +7,7 @@ public enum BaseResponseStatus
 {
     Success,
     NotFound,
-    ValidationError,
+    InvalidInput,
     DatabaseError,
     UnknownError,
     IsValid,
@@ -23,5 +23,6 @@ public enum BaseResponseStatus
     Empty,
     Busy,
     FailToUpdate,
-    InvalidStatus
+    InvalidStatus,
+    NoWorkingDay
 }

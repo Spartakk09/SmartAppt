@@ -1,5 +1,4 @@
 ﻿using Business.SmartAppt.Models;
-using Business.SmartAppt.Models.Booking;
 using Business.SmartAppt.Models.Customer;
 
 namespace Business.SmartAppt.Services;
@@ -14,7 +13,6 @@ public interface ICustomerService
     Task<BaseResponse> MakeBookingAsync(MakeBookingRequestModel booking, CancellationToken ct);
     Task<BaseResponse> CancelBookingAsync(int bookingId, CancellationToken ct);
     Task<BaseResponse> UpdateBookingAsync(int oldBookingId, MakeBookingRequestModel newBooking, CancellationToken ct);
-    Task<BaseResponse> GetFreeSlotsForDayAsync(int businessId, int serviceId, DateTime dateUtc, CancellationToken ct);
+    Task<BaseResponse> GetFreeSlotsForDayAsync(int businessId, int serviceId, DateTime date, CancellationToken ct);
     Task<BaseResponse> HasFreeSlotsForMonthAsync(int businessId, int serviceId, int month, int? year, CancellationToken ct);
-    Task<BaseResponse> HasFreeSlotsForYearAsync(int businessId, int serviceId, int year, CancellationToken ct);
 }

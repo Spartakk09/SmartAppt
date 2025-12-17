@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\SmartAppt.Common\SmartAppt.Common.csproj" />
     <ProjectReference Include="..\..\Data\SmartAppt.Data\Data.SmartAppt.SQL.csproj" />
   </ItemGroup>
 

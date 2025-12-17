@@ -134,4 +134,38 @@ public class ServiceRepository : IServiceRepository
 
         await cmd.ExecuteNonQueryAsync(ct);
     }
+
+    public virtual async Task<List<ServiceEntity>> GetSeviceByBusinessIdAsync(int businessId, int skip = 0, int take = 10, CancellationToken ct = default)
+    {
+        var list = new List<ServiceEntity>();
+
+        await using var cn = new SqlConnection(_connectionString);
+        await cn.OpenAsync(ct);
+
+        await using var cmd = new SqlCommand("core.Service_GetByBusinessId", cn)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
+
+        cmd.Parameters.Add(new SqlParameter("@BusinessId", SqlDbType.Int) { Value = businessId });
+        cmd.Parameters.Add(new SqlParameter("@Skip", SqlDbType.Int) { Value = skip });
+        cmd.Parameters.Add(new SqlParameter("@Take", SqlDbType.Int) { Value = take });
+
+        await using var reader = await cmd.ExecuteReaderAsync(ct);
+
+        while (await reader.ReadAsync(ct))
+        {
+            list.Add(new ServiceEntity
+            {
+                ServiceId = reader.GetInt32(reader.GetOrdinal("ServiceId")),
+                BusinessId = reader.GetInt32(reader.GetOrdinal("BusinessId")),
+                Name = reader.GetString(reader.GetOrdinal("Name")),
+                DurationMin = reader.GetInt32(reader.GetOrdinal("DurationMin")),
+                Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive"))
+            });
+        }
+
+        return list;
+    }
 }

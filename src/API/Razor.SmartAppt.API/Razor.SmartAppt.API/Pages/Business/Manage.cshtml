@@ -1,0 +1,68 @@
+﻿@page "{id?}"
+@model Razor.SmartAppt.API.Pages.Business.ManageModel
+
+<h2>Manage Business</h2>
+
+<form method="post" asp-page-handler="Load" class="mb-4">
+    <div class="mb-3">
+        <label asp-for="SearchId" class="form-label">Business Id</label>
+        <input asp-for="SearchId" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-secondary">Load Business</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert alert-info">@Model.Message</div>
+}
+
+@if (Model.Business != null && Model.Business.BusinessId > 0)
+{
+    <hr />
+    <h3>Business Details (Id: @Model.Business.BusinessId)</h3>
+
+    <form method="post" asp-page-handler="Save" class="mb-3">
+        <input type="hidden" asp-for="Business.BusinessId" />
+
+        <div class="mb-3">
+            <label asp-for="Business.Name" class="form-label"></label>
+            <input asp-for="Business.Name" class="form-control" />
+            <span asp-validation-for="Business.Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Business.Email" class="form-label"></label>
+            <input asp-for="Business.Email" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Business.Phone" class="form-label"></label>
+            <input asp-for="Business.Phone" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Business.TimeZoneIana" class="form-label"></label>
+            <input asp-for="Business.TimeZoneIana" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Business.SettingsJson" class="form-label"></label>
+            <textarea asp-for="Business.SettingsJson" class="form-control" rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+
+    <form method="post" asp-page-handler="Delete">
+        <input type="hidden" asp-for="Business.BusinessId" />
+        <button type="submit" class="btn btn-danger"
+                onclick="return confirm('Are you sure you want to delete this business?');">
+            Delete Business
+        </button>
+    </form>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

@@ -1,5 +1,4 @@
 ﻿using Business.SmartAppt.Models;
-using Business.SmartAppt.Models.Booking;
 using Business.SmartAppt.Models.Customer;
 using Business.SmartAppt.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +24,7 @@ public class CustomerController : ControllerBase
         return response;
     }
 
-    [Route("GetById/{customerId}")]
+    [Route("{customerId}")]
     [HttpGet]
     public async Task<BaseResponse> GetByIdAsync(int customerId, CancellationToken ct)
     {
@@ -41,7 +40,7 @@ public class CustomerController : ControllerBase
         return response;
     }
 
-    [Route("DeleteById/{customerId}")]
+    [Route("{customerId}")]
     [HttpDelete]
     public async Task<BaseResponse> DeleteAsync(int customerId, CancellationToken ct)
     {
@@ -83,9 +82,9 @@ public class CustomerController : ControllerBase
 
     [Route("FreeSlotsForPerDay")]
     [HttpGet]
-    public async Task<BaseResponse> GetFreeSlotsForDayAsync(int businessId, int serviceId, DateTime dateUtc, CancellationToken ct)
+    public async Task<BaseResponse> GetFreeSlotsForDayAsync(int businessId, int serviceId, DateTime date, CancellationToken ct)
     {
-        var result = await _customerService.GetFreeSlotsForDayAsync(businessId, serviceId, dateUtc, ct);
+        var result = await _customerService.GetFreeSlotsForDayAsync(businessId, serviceId, date, ct);
 
         return result;
     }
@@ -95,14 +94,6 @@ public class CustomerController : ControllerBase
     public async Task<BaseResponse> FreeSlotsForMonthAsync(int businessId, int serviceId, int month, int? year, CancellationToken ct)
     {
         var response = await _customerService.HasFreeSlotsForMonthAsync(businessId, serviceId, month, year, ct);
-        return response;
-    }
-
-    [Route("FreeSlotForYear")]
-    [HttpGet]
-    public async Task<BaseResponse> FreeSlotsForYearAsync(int businessId, int serviceId, int year, CancellationToken ct)
-    {
-        var response = await _customerService.HasFreeSlotsForYearAsync(businessId, serviceId, year, ct);
         return response;
     }
 }
