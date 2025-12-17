@@ -1,0 +1,125 @@
+﻿@page
+@model Razor.SmartAppt.API.Pages.Services.IndexModel
+
+<h2>My Services</h2>
+
+<!-- ================= LOAD ================= -->
+<form method="post" asp-page-handler="Load">
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label>Business Id</label>
+            <input class="form-control" asp-for="BusinessId" />
+        </div>
+        <div class="col-md-2">
+            <label>Skip</label>
+            <input class="form-control" asp-for="Skip" />
+        </div>
+        <div class="col-md-2">
+            <label>Take</label>
+            <input class="form-control" asp-for="Take" />
+        </div>
+        <div class="col-md-3 align-self-end">
+            <button class="btn btn-secondary">Load</button>
+        </div>
+    </div>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert alert-info">@Model.Message</div>
+}
+
+@if (Model.BusinessId > 0)
+{
+    <hr />
+    <h3>Add Service</h3>
+
+    <!-- ================= ADD ================= -->
+    <form method="post" asp-page-handler="Add">
+        <input type="hidden" asp-for="BusinessId" />
+        <input type="hidden" asp-for="Skip" />
+        <input type="hidden" asp-for="Take" />
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label>Name</label>
+                <input class="form-control" asp-for="NewService.Name" />
+            </div>
+            <div class="col-md-2">
+                <label>Duration (min)</label>
+                <input class="form-control" asp-for="NewService.DurationMin" />
+            </div>
+            <div class="col-md-2">
+                <label>Price</label>
+                <input class="form-control" asp-for="NewService.Price" />
+            </div>
+            <div class="col-md-3 align-self-end">
+                <button class="btn btn-primary">Add</button>
+            </div>
+        </div>
+    </form>
+
+    <hr />
+    <h3>Service List</h3>
+
+    @if (Model.Services.Any())
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Duration</th>
+                    <th>Price</th>
+                    <th>Active</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var s in Model.Services)
+                {
+                    <tr>
+                        <td>@s.ServiceId</td>
+                        <td>@s.Name</td>
+                        <td>@s.DurationMin</td>
+                        <td>@s.Price</td>
+                        <td>@s.IsActive</td>
+                        <td>
+                            <div class="d-flex gap-2">
+
+                                @if (s.IsActive)
+                                {
+                                    <!-- ================= DISABLE ================= -->
+                                    <form method="post" asp-page-handler="Disable">
+                                        <input type="hidden" name="serviceId" value="@s.ServiceId" />
+                                        <input type="hidden" asp-for="BusinessId" />
+                                        <input type="hidden" asp-for="Skip" />
+                                        <input type="hidden" asp-for="Take" />
+                                        <button class="btn btn-warning btn-sm">Disable</button>
+                                    </form>
+                                }
+
+                                <!-- ================= DELETE ================= -->
+                                <form method="post" asp-page-handler="Delete">
+                                    <input type="hidden" name="serviceId" value="@s.ServiceId" />
+                                    <input type="hidden" asp-for="BusinessId" />
+                                    <input type="hidden" asp-for="Skip" />
+                                    <input type="hidden" asp-for="Take" />
+                                    <button class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Delete this service?')">
+                                        Delete
+                                    </button>
+                                </form>
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No services found.</p>
+    }
+}

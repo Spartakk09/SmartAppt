@@ -1,0 +1,72 @@
+﻿@*
+    Pages/Shared/_Layout.cshtml
+*@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SmartAppt Dashboard</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="app-bg-glow"></div>
+
+    <header class="app-header border-0">
+        <nav class="navbar navbar-expand-lg app-navbar">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center gap-2" asp-page="/Index">
+                    <div class="brand-logo-pulse"></div>
+                    <span class="fw-semibold">SmartAppt</span>
+                    <span class="brand-badge">Dashboard</span>
+                </a>
+
+                <button class="navbar-toggler app-nav-toggler" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#mainNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 app-nav-links">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="/Business/Create">Create Business</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="/Business/Manage">Manage Business</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="/Services/Index">My Services</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="/Calendar/Index">Calendar</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="/Bookings/Index">Bookings</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="app-main">
+        <div class="container py-4 py-md-5">
+            <div class="app-shell shadow-lg">
+                @RenderBody()
+            </div>
+        </div>
+    </main>
+
+    <footer class="app-footer text-center">
+        <div class="container small text-muted">
+            SmartAppt • @DateTime.UtcNow.Year • Built with ASP.NET Core Razor Pages
+        </div>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

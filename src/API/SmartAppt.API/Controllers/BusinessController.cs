@@ -1,7 +1,5 @@
 ﻿using Business.SmartAppt.Models;
-using Business.SmartAppt.Models.Booking;
-using Business.SmartAppt.Models.Service;
-using Business.SmartAppt.Services;
+using Business.SmartAppt.Models.Business;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SmartAppt.API.Controllers;
@@ -80,11 +78,11 @@ public class BusinessController : ControllerBase
         return result;
     }
 
-    [Route("AllBookingsForBusiness/{businessId}")]
+    [Route("BookingsForBusiness/{businessId}")]
     [HttpGet]
-    public async Task<BaseResponse> GetAllBookingsByBusinessIdAsync(int businessId, CancellationToken ct)
+    public async Task<BaseResponse> GetBookingsBusinessIdAsync(int businessId, string? status = null, DateOnly? date = null, int skip = 0, int take = 50, CancellationToken ct = default)
     {
-        var result = await _businessService.GetAllBookingsByBusinessIdAsync(businessId, ct);
+        var result = await _businessService.GetBookingsAsync(businessId, status, date, skip, take, ct);
         return result;
     }
 
@@ -102,5 +100,13 @@ public class BusinessController : ControllerBase
     {
         var result = await _businessService.GetMonthlyCalendarAsync(businessId, month, year, ct);
         return result;
+    }
+
+    [Route("GetServices/{businessId}")]
+    [HttpGet]
+    public async Task<BaseResponse> GetServiceByBusinessIdAsync(int businessId, int skip = 0, int take = 10, CancellationToken ct = default)
+    {
+        var Response = await _businessService.GetServicesByBusinessIdAsync(businessId, skip, take, ct);
+        return Response;
     }
 }

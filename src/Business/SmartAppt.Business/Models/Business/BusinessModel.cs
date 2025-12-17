@@ -1,6 +1,6 @@
 ﻿namespace Business.SmartAppt.Models;
 
-public class BusinessModel
+public class BusinessModel : BaseResponse
 {
     public int BusinessId { get; set; }
     public string Name { get; set; } = null!;
